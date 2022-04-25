@@ -19,24 +19,24 @@ document.getElementById('btn_Solve').addEventListener('click', ()=>{
     if(algo == '1'){
 
         document.getElementById('algo').innerText = 'FCFS';
-        // res = []
-        // gChart  = [];
+        res = [];
+        gChart  = [];
         res = fcfs(calculation(arrivalTimes,brustTimes));
         gChart = getFCFSGantt_Chart();   
     }
     else if(algo == '2'){
         console.log('SJF');
         document.getElementById('algo').innerText = 'SJF';
-        // res = []
-        // gChart  = [];
+        res = [];
+        gChart  = [];
         res = sjf(calculation(arrivalTimes,brustTimes));
         gChart = getSJFGantt_Chart();
     }
     else if(algo == '3'){
         console.log('SRTF');
         document.getElementById('algo').innerText = 'SRTF';
-            // res = []
-            // gChart  = [];
+        res = [];
+        gChart  = [];
         res = srtf(calculation(arrivalTimes,brustTimes));
         gChart = generalizedGantt_Chart();
     }
