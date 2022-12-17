@@ -1,12 +1,3 @@
-document.getElementById('my-select').addEventListener('change', function() {
-    if(this.value == '4') {
-        document.getElementById('timeQuantum').style.display = 'block';  
-    }
-    else{
-        document.getElementById('timeQuantum').style.display = 'none';
-    }
-    console.log('You selected: ', this.value);
-  });
     
 document.getElementById('btn_Solve').addEventListener('click', ()=>{
     let res = [];
@@ -16,52 +7,64 @@ document.getElementById('btn_Solve').addEventListener('click', ()=>{
     let   burstTime = document.getElementById('brustTime').value.trim().replace( /  +/g, ' ' );
     let   arrivalTimes = arrivalTime.split(' ').map(p => Number(p));
     let   brustTimes = burstTime.split(' ').map(p => Number(p));
-    if(algo == '1'){
+    const input = []
+        for(let i = 0; i < arrivalTimes.length; i++){
+                let p = {
+                    'arrivalTime': arrivalTimes[i],
+                    'burstTime': brustTimes[i]
+                }
+                input.push(p);
+        }
+    data = input.sort((a,b) => a.arrivalTime - b.arrivalTime);
+
+    if(algo === '1'){
 
         document.getElementById('algo').innerText = 'FCFS';
         res = [];
         gChart  = [];
-        res = fcfs(calculation(arrivalTimes,brustTimes));
-        gChart = getFCFSGantt_Chart();   
+        res = fcfs(calculation(data));
+        gChart = getFCFSGantt_Chart(); 
+        displayData(res, gChart);  
     }
-    else if(algo == '2'){
+    else if(algo === '2'){
         console.log('SJF');
         document.getElementById('algo').innerText = 'SJF';
         res = [];
         gChart  = [];
-        res = sjf(calculation(arrivalTimes,brustTimes));
+        res = sjf(calculation(data));
         gChart = getSJFGantt_Chart();
+        displayData(res, gChart);
     }
-    else if(algo == '3'){
+    else if(algo === '3'){
         console.log('SRTF');
         document.getElementById('algo').innerText = 'SRTF';
         res = [];
         gChart  = [];
-        res = srtf(calculation(arrivalTimes,brustTimes));
+        res = srtf(calculation(data));
         gChart = generalizedGantt_Chart();
+        displayData(res, gChart);
     }
-    else if(algo == '4'){
-        const timeQuantum = document.getElementById('tQ').value;
-        console.log('RR',timeQuantum);
-        document.getElementById('algo').innerText = 'RR';
-    }
+
+})
+
+
+function displayData(res, gChart){
     document.getElementById('result').innerHTML = getData(res);
     document.getElementById('avgWaitingTime').innerText = AverageWaitingTime(res);
     document.getElementById('avgTurnAroundTime').innerText = AverageTurnAroundTime(res);
     document.getElementById('gTitle').style.display ='block';
     document.getElementById('gantt_chart').innerHTML = getGantt_Chart(gChart) ;
     document.getElementById('gantt_chartVal').innerHTML = getGantt_ChartVal(gChart); 
+}
 
-})
-
-function calculation(at,bt){
+function calculation(d){
     let pName = [];
-    for(let i = 0; i < at.length; i++){
+    for(let i = 0; i < d.length; i++){
         pName.push(`P${i+1}`);
     }
     let pros = [];
-    for(let i = 0; i < at.length; i++){
-        pros.push(new process(pName[i], at[i], bt[i]));
+    for(let i = 0; i < d.length; i++){
+        pros.push(new process(pName[i], d[i].arrivalTime, d[i].burstTime));
     }
 return pros;
 }

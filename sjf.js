@@ -1,21 +1,20 @@
-let sfjGantt_Charts = [];
-let sfjBurstTime = [];
+let sjfGantt_Charts = [];
+let sjfBurstTime = [];
 function sjf(sjfProcesses) {
-  sfjGantt_Charts = [];  
-  sjfProcesses.sort(function (a, b) {
-    return a.arrivalTime - b.arrivalTime;
-  });
-  sfjBurstTime = sjfProcesses.map((p) => p.burstTime);
-    sfjGantt_Charts.push(
-      new gantt_Chart(sjfProcesses[0].name, sjfProcesses[0].arrivalTime, sjfProcesses[0].burstTime)
+    console.log(sjfProcesses)
+  sjfGantt_Charts = [];  
+  sjfBurstTime = sjfProcesses.map((p) => p.burstTime);
+    sjfGantt_Charts.push(
+      new gantt_Chart(sjfProcesses[0].name, sjfProcesses[0].arrivalTime, sjfProcesses[0].arrivalTime+ sjfProcesses[0].burstTime)
     );
   sjfProcesses[0].isArrived = true;
-  let start = sjfProcesses[0].arrivalTime;
-  let end = sjfProcesses[0].burstTime;
+  sjfBurstTime = sjfBurstTime.filter((p) => p !== sjfBurstTime[0]);
+  sjfBurstTime = sjfBurstTime.sort((a, b) => a - b);
   for (let i = 1; i < sjfProcesses.length; i++) {
-    let p = getSJFProcesses(start, end, sjfProcesses);
-    sfjGantt_Charts.push(new gantt_Chart(p.name,sfjGantt_Charts[i-1].endTime,sfjGantt_Charts[i-1].endTime+p.burstTime)); 
-    end = sfjGantt_Charts[i].endTime;
+    let p = getSJFProcesses(sjfBurstTime, sjfProcesses);
+    sjfBurstTime = sjfBurstTime.filter((p) => p !== sjfBurstTime[0]);
+    console.log(p)
+    sjfGantt_Charts.push(new gantt_Chart(p.name,sjfGantt_Charts[i-1].endTime,sjfGantt_Charts[i-1].endTime+p.burstTime)); 
     
   }
   return calculateCTWTTATRT(getSJFGantt_Chart(),sjfProcesses);
@@ -23,26 +22,11 @@ function sjf(sjfProcesses) {
 
 function getSJFGantt_Chart(){
 
-    return sfjGantt_Charts;
+    return sjfGantt_Charts;
 }
-function getSJFProcesses(start, end, proc) {
-let tempArr = [];
-if (end <= Math.max(...proc.map((p) => p.arrivalTime))) {  
-  for (let i = start; i <= end; i++) {
-    if (i >= proc.length && proc[i].isArrived === false) {
-      break;
-    } else {
-      tempArr.push(sfjBurstTime[i]);
-    }
-  }
-} else {
-  for (let i = 0; i < proc.length; i++) {
-    if (proc[i].arrivalTime <= end && proc[i].isArrived === false) {
-      tempArr.push(sfjBurstTime[i]);
-    }
-  }
-}
-let p = findProcess(findMinSJFProcesses(tempArr),proc);
+function getSJFProcesses(burst, proc) {
+
+let p = findProcess(burst[0],proc);
 p.isArrived = true;
 return p;
 }

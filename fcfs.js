@@ -1,13 +1,11 @@
     let fcfsGantt_chart = [];
     function fcfs(fcfsProcesses){
     fcfsGantt_chart = [];
-    fcfsProcesses.sort(function(a, b){
-        return a.arrivalTime - b.arrivalTime;
-    });
     fcfsProcesses[0].completionTime = fcfsProcesses[0].arrivalTime + fcfsProcesses[0].burstTime;
     fcfsProcesses[0].turnaroundTime = fcfsProcesses[0].completionTime - fcfsProcesses[0].arrivalTime;
-    fcfsProcesses[0].responseTime = fcfsProcesses[0].arrivalTime - 0;
-    fcfsGantt_chart.push(new gantt_Chart(fcfsProcesses[0].name, 0, fcfsProcesses[0].burstTime));
+    fcfsProcesses[0].responseTime = 0;
+    console.log(fcfsProcesses);
+    fcfsGantt_chart.push(new gantt_Chart(fcfsProcesses[0].name, fcfsProcesses[0].arrivalTime, fcfsProcesses[0].arrivalTime+ fcfsProcesses[0].burstTime));
     for(let i = 1; i < fcfsProcesses.length; i++){
         if(fcfsProcesses[i].arrivalTime >= fcfsGantt_chart[i-1].endTime){
             fcfsGantt_chart.push(new gantt_Chart(fcfsProcesses[i].name, fcfsProcesses[i].arrivalTime, (fcfsProcesses[i].arrivalTime+fcfsProcesses[i].burstTime)));
